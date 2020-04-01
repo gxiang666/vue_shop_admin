@@ -22,3 +22,12 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### install dependecy
+```
+// element-ui
+npm i element-ui -S
+
+// axios
+npm install axios -s
+```
