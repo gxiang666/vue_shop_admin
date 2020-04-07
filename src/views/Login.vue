@@ -68,6 +68,7 @@ export default {
               if (response.data.code === 200) {
                 console.log(response.data.data);
                 window.sessionStorage.setItem("username", response.data.data);
+                this.$message.success(response.data.message);
                 this.$router.push("/home");
               } else {
                 return this.$message.error(response.data.message);
