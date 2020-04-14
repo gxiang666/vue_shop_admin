@@ -32,6 +32,7 @@
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
         <el-table-column prop="updateTime" label="更新时间"></el-table-column>
         <el-table-column label="操作">
+          <!-- 作用域插槽：可以用当前行的数据 -->
           <template slot-scope="scope">
             <el-button
               type="primary"
@@ -97,6 +98,29 @@
         <el-button type="primary" @click="addUser">确定</el-button>
       </span>
     </el-dialog>
+
+    <!-- 编辑用户对话框 -->
+    <el-dialog
+      title="编辑用户"
+      :visible.sync="editUserDialogVisible"
+      width="50%"
+      @close="editResetUserFormFileds"
+    >
+      <el-form
+        ref="editUserRef"
+        :rules="editUserRule"
+        :model="userDetil"
+        label-width="70px"
+      >
+        <el-form-item label="用户名">
+          <el-input v-model="userDetil.username"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editUserDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="etitUser">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -110,10 +134,14 @@ export default {
         current: 1,
         size: 2
       },
+      userDetil: {
+        username: "",
+        mobile: ""
+      },
       userList: [],
       total: 0,
       addUserDialogVisible: false,
-      // editUserDialogVisible: false,
+      editUserDialogVisible: false,
       // setRoleDialogVisible: false,
       addUserModel: {
         username: "",
@@ -131,6 +159,17 @@ export default {
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
+          {
+            min: 3,
+            max: 10,
+            message: "用户名的长度在3~10个字符之间",
+            trigger: "blur"
+          }
+        ]
+      },
+      editUserRule: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
           {
             min: 3,
             max: 10,
@@ -167,6 +206,23 @@ export default {
     },
     editUserInfo(id) {
       console.log(id);
+      this.$axios
+        .post("/sysUser/detail", { id: id })
+        .then(response => {
+          if (response.data.code === 200) {
+            console.log(response.data.data);
+            console.log("====================================");
+            console.log(this.userDetil);
+            this.userDetil = response.data.data;
+            console.log(this.userDetil);
+          } else {
+            this.$message.error(response.data.message);
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.data);
+        });
+      this.editUserDialogVisible = true;
     },
     removeUserInfo(id) {
       console.log(id);
@@ -199,6 +255,12 @@ export default {
     },
     resetUserFormFileds() {
       this.$refs.addUserRef.resetFields();
+    },
+    etitUser() {
+      this.editUserDialogVisible = false;
+    },
+    editResetUserFormFileds() {
+      this.$refs.editUserRef.resetFields();
     }
   }
 };

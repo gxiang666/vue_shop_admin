@@ -30,4 +30,13 @@ npm i element-ui -S
 
 // axios
 npm install axios -s
+
+// vuex
+npm install vuex --save
+
+// vue-router
+npm install vue-router --save-dev
+
+// less
+npm install less less-loader --save-dev
 ```
